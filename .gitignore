@@ -1,3 +1,5 @@
+# Python .gitignore - https://github.com/github/gitignore/blob/master/Python.gitignore
+
 # Private Settings
 keys.yaml
 
@@ -10,17 +12,6 @@ keys.yaml
 
 # VSCode
 .vscode
-
-# Database file
-tweets.db 
-
-# ML Model
-model.joblib
-
-# Old files
-old
-
-# Python .gitignore - https://github.com/github/gitignore/blob/master/Python.gitignore
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
