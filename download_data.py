@@ -45,7 +45,7 @@ except FileNotFoundError:
 
 # Add users to the checking list.
 if (args.users_to_add is not None):
-    users_to_check.extend(args.users_to_add)
+    users_to_check = args.users_to_add + users_to_check
     
 #--------------------------------------#
 # Data Collecting Loop
