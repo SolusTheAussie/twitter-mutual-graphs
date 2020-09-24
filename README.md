@@ -10,7 +10,7 @@ Use the package manager [conda](https://docs.conda.io/en/latest/) to install the
 conda env create -f environment.yml
 ```
 
-Finally, add your [twitter keys](TODO) to the `keys.yaml` file.
+Finally, add your [twitter keys](https://developer.twitter.com/) to the `keys.yaml` file.
 
 ## Usage
 
