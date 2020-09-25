@@ -57,10 +57,18 @@ try:
 
         print("Getting friends...")
         friends = set()
+        try:
         # Iterate through all of the current user's friends and put in list
-        for friend in tweepy.Cursor(api.friends, id=current_user, count=200).items():
-            # Process the friend here
-            friends.add(friend.screen_name)
+            for friend in tweepy.Cursor(api.friends, id=current_user, count=200).items():
+                # Process the friend here
+                friends.add(friend.screen_name)
+        except tweepy.error.TweepError as e:
+            # If we get a not authorized error, skip the user and print a warning. Otherwise re-raise the error.
+            if (e.reason == "Not authorized."):
+                print("Error: Not authorized to view user (is the user locked?)")
+                continue
+            else: 
+                raise e
 
         print("Getting followers...")
         followers = set()
@@ -79,6 +87,11 @@ try:
 except KeyboardInterrupt:
     # if we cancel the current user, add them back to the list. 
     users_to_check.insert(0, current_user)
+
+except Exception as e:
+    # if we get an except while processing the current user, add them back to the list. 
+    users_to_check.insert(0, current_user)
+    raise e
 
 finally:
     # Write Graph
