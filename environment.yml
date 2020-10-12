@@ -1,8 +1,8 @@
 name: twitter-mutuals
 dependencies:
   - networkx
-  - json
   - pyyaml
   - matplotlib
+  - pip
   - pip:
     - tweepy
