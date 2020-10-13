@@ -3,6 +3,7 @@ dependencies:
   - networkx
   - pyyaml
   - matplotlib
+  - tqdm
   - pip
   - pip:
     - tweepy

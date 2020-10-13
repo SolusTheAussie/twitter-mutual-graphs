@@ -3,6 +3,8 @@ import networkx as nx
 import json
 import yaml
 import argparse
+from time import time, sleep
+from tqdm import trange
 
 #--------------------------------------#
 # Parse Command Line Arguments
@@ -23,7 +25,7 @@ auth = tweepy.OAuthHandler(keys['twitter']['api_key'], keys['twitter']['api_secr
 auth.set_access_token(keys['twitter']['access_token'], keys['twitter']['access_token_secret'])
 
 # Construct the API instance
-api = tweepy.API(auth, wait_on_rate_limit = True, wait_on_rate_limit_notify = True)
+api = tweepy.API(auth, wait_on_rate_limit = False, wait_on_rate_limit_notify = False)
 
 #---------------------------------------#
 # Load in previous data.
@@ -48,6 +50,27 @@ if (args.users_to_add is not None):
     users_to_check = args.users_to_add + users_to_check
     
 #--------------------------------------#
+# Defining Rate Limit Handler
+#--------------------------------------#
+
+def timeout_handled(cursor, resource):
+    """Handle timeout errors from a tweepy cursor. The resource parameter can be "friends" or "followers". """
+
+    while True:
+        try:
+            yield cursor.next()
+        except tweepy.RateLimitError:
+            reset_time = api.rate_limit_status()["resources"][resource][f"/{resource}/list"]["reset"]
+            time_remaining = int(reset_time - time())
+            for _ in trange(time_remaining + 5, desc="Rate limit reached. Progress until reset"):
+                sleep(1)
+        except StopIteration:
+            return
+
+
+api.friends
+
+#--------------------------------------#
 # Data Collecting Loop
 #--------------------------------------#
 try:
@@ -59,7 +82,7 @@ try:
         friends = set()
         try:
         # Iterate through all of the current user's friends and put in list
-            for friend in tweepy.Cursor(api.friends, id=current_user, count=200).items():
+            for friend in timeout_handled(tweepy.Cursor(api.friends, id=current_user, count=200).items(), "friends"):
                 # Process the friend here
                 friends.add(friend.screen_name)
         except tweepy.error.TweepError as e:
@@ -73,7 +96,7 @@ try:
         print("Getting followers...")
         followers = set()
         # Iterate through all of the current user's followers and put in list
-        for follower in tweepy.Cursor(api.followers, id=current_user, count=200).items():
+        for follower in timeout_handled(tweepy.Cursor(api.followers, id=current_user, count=200).items(), "followers"):
             # Process the friend here
             followers.add(follower.screen_name)
 
