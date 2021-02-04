@@ -6,6 +6,10 @@ import argparse
 from time import time, sleep
 from tqdm import trange
 
+# Set whether the program downloads usernames or user ids.
+DOWNLOAD_MODE = "screenname"
+# DOWNLOAD_MODE = "id" # Unimplemented. 
+
 #--------------------------------------#
 # Parse Command Line Arguments
 #--------------------------------------#
